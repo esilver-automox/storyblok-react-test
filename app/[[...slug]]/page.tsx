@@ -17,7 +17,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
 
   const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug
-  const res = await fetch(`https://api.storyblok.com/v2/cdn/stories/${slug}?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${process.env.NEXT_PUBLIC_SB_VERSION}&filter_query[component][in]=individual_resource_blog,blog_listing_page`)
+  const res = await fetch(`https://api.storyblok.com/v2/cdn/stories/${slug}?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${process.env.NEXT_PUBLIC_SB_VERSION}`)
   const data = await res.json()
   if (!data.story) {
     return {}
@@ -31,12 +31,12 @@ export async function generateMetadata(
 }
 
 export async function generateStaticParams(){
-  const initialResources = await fetch(`https://api.storyblok.com/v2/cdn/stories?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${process.env.NEXT_PUBLIC_SB_VERSION}&per_page=10&page=1&filter_query[component][in]=individual_resource_blog,blog_listing_page`)
+  const initialResources = await fetch(`https://api.storyblok.com/v2/cdn/stories?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${process.env.NEXT_PUBLIC_SB_VERSION}&per_page=10&page=1`)
   let resources: any[] = (await initialResources.json() as unknown as Stories).stories
   const total = Number(initialResources.headers.get('total'))
   let pageNumber = 2
   while (pageNumber * 10 < total) {
-    const nextResources = await fetch(`https://api.storyblok.com/v2/cdn/stories?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${process.env.NEXT_PUBLIC_SB_VERSION}&per_page=10&page=${pageNumber}&filter_query[component][in]=individual_resource_blog,blog_listing_page`)
+    const nextResources = await fetch(`https://api.storyblok.com/v2/cdn/stories?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${process.env.NEXT_PUBLIC_SB_VERSION}&per_page=10&page=${pageNumber}`)
     const nextStories = (await nextResources.json() as unknown as Stories).stories
     resources = resources.concat(nextStories)
     pageNumber += 1

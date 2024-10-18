@@ -1,11 +1,11 @@
 import { storyblokEditable } from "@storyblok/react/rsc";
-// import {Search} from './AlgoliaProvider'
+import {SearchResources} from './AlgoliaProviderResources'
 
 export default function ListingPageResources({blok}: any) {
   return (
     <div {...storyblokEditable}>
-      <h1>Blog listing page</h1>
-      {/* <Search/> */}
+      <h1>Resources listing page</h1>
+      <SearchResources/>
     </div>
   )
 }

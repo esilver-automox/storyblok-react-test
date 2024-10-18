@@ -5,7 +5,6 @@ import Footer from "../footer";
 import ListingPageResources from '../../components/ListingPageResources'
 import IndividualPageResources from '../../components/IndividualPageResources'
 import Component from '../../components/component'
-import Home from "../homepage";
  
 const Components = {
   one_column_text: Component,
@@ -86,7 +85,15 @@ const UtilComponents = {
 const Pages = {
   page: ListingPageResources,
   individual_resource_blog: IndividualPageResources,
+  individual_resource_news: IndividualPageResources,
+  individual_resource_case_study: IndividualPageResources,
+  individual_resource_ebook_guide: IndividualPageResources,
+  individual_resource_event: IndividualPageResources,
+  individual_resource_solution_brief: IndividualPageResources,
+  individual_resource_webinar_video: IndividualPageResources,
+  individual_resource_podcast: IndividualPageResources,
   blog_listing_page: ListingPageResources,
+  dg_research_page: IndividualPageResources
 }
 
 const everything = Object.assign(Components, UtilComponents, Pages)

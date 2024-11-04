@@ -1,31 +1,18 @@
-import { storyblokInit } from "@storyblok/react/rsc";
-import StoryblokBridgeLoader from "@storyblok/react/bridge-loader";
+
+import { apiPlugin, storyblokInit } from '@storyblok/react/rsc'
+
 import Navigation from "../navigation";
 import Footer from "../footer";
-import ListingPage from '../../components/ListingPage'
-import IndividualPage from '../../components/IndividualPage'
- 
-const components = {
-  'worklets-main': ListingPage,
-  'worklet-individual': IndividualPage 
-}
+import StoryblokProvider from '../../components/StoryblokProviderWorklets'
 
-storyblokInit({
-  accessToken: process.env.NEXT_PUBLIC_STORYBLOK_WORKLETS_API_KEY,
-  use: [],
-  apiOptions: {
-    region: 'us'
-  },
-  components
-});
- 
-export default function RootSBLayout({ children }: any) {
+export default function RootLayout({ children }: any) {
   return (
-     <div>
-       <Navigation/>
-       {children}
-       <StoryblokBridgeLoader options={{}} />
-       <Footer/>
-    </div>
+    <StoryblokProvider>
+      <div>
+        <Navigation/>
+        {children}
+        <Footer/>
+      </div>
+    </StoryblokProvider>
   )
 }

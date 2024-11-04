@@ -1,4 +1,5 @@
-import {StoryblokComponent} from "@storyblok/react/rsc"
+
+import { StoryblokStory } from '@storyblok/react/rsc'
 import { Metadata } from "next"
 
 import NotFound from "../../not-found"
@@ -61,9 +62,11 @@ export default async function SBPage({params}: {params: {slug: string}}) {
     return <NotFound/>
   }
 
+
+  console.log({story: data.story})
   return (
     <div>
-      <StoryblokComponent blok={data.story.content} />
+      <StoryblokStory story={data.story} />
     </div>
   );
 

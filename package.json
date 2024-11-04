@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@storyblok/react": "^3.0.15",
+    "@storyblok/react": "4.0.0",
     "algoliasearch": "^5.8.1",
     "next": "14.2.15",
     "react": "^18",
     "react-dom": "^18",
     "react-instantsearch": "^7.13.4",
-    "react-instantsearch-nextjs": "^0.3.14",
+    "react-instantsearch-nextjs": "^0.3.16",
     "sass": "^1.79.5"
   },
   "devDependencies": {

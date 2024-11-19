@@ -1,8 +1,9 @@
 
-import { StoryblokStory } from '@storyblok/react/rsc'
+import { ISbStoriesParams, ISbStory, StoryblokClient, StoryblokStory } from '@storyblok/react/rsc'
 import { Metadata } from "next"
 
 import NotFound from "../../not-found"
+import { getStoryblokApi } from '@/lib/storyblok-worklets'
 
 interface Stories {
   stories: any[]
@@ -44,30 +45,39 @@ export async function generateStaticParams(){
   return resources.map(resource => ({slug: resource.full_slug.split['/']}))
 }
 
-async function fetchData(slug: string) {
-  try {
-    const version = process.env.NEXT_PUBLIC_SB_VERSION === 'published' ? 'published' : 'draft'
-    const res = await fetch(`https://api-us.storyblok.com/v2/cdn/stories/worklets/${slug}?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY}&version=${version}`)
-    const data = await res.json()
-    return data
-  } catch (err) {
-    console.log(err)
-    return {}
-  }
+async function fetchData(slug: string): Promise<ISbStory> {
+  const version = process.env.NEXT_PUBLIC_SB_VERSION === 'published' ? 'published' : 'draft'
+  const sbParams: ISbStoriesParams = {version}
+  const storyblokApi: StoryblokClient = getStoryblokApi()
+  return storyblokApi.get(`cdn/stories/worklets/${slug}`, sbParams, {cache: 'no-store'})
+
+  // try {
+  //   const version = process.env.NEXT_PUBLIC_SB_VERSION === 'published' ? 'published' : 'draft'
+  //   const res = await fetch(`https://api-us.storyblok.com/v2/cdn/stories/worklets/${slug}?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY}&version=${version}`)
+  //   const data = await res.json()
+  //   return data
+  // } catch (err) {
+  //   console.log(err)
+  //   return {}
+  // }
 }
 
 export default async function SBPage({params}: {params: {slug: string}}) {
-  const data = await fetchData(params.slug)
-  if (!data.story) {
+  try {
+    const {data}: ISbStory = await fetchData(params.slug)
+    return (
+      <div>
+        <StoryblokStory blok={data.story} />
+      </div>
+    );
+  } catch (e) {
+    console.log(e)
     return <NotFound/>
   }
+  // if (!data.story) {
+  //   return <NotFound/>
+  // }
 
-
-  console.log({story: data.story})
-  return (
-    <div>
-      <StoryblokStory story={data.story} />
-    </div>
-  );
+  
 
 }

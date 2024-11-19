@@ -1,8 +1,9 @@
-import { StoryblokStory } from '@storyblok/react/rsc'
+import { ISbStoriesParams, ISbStory, StoryblokClient, StoryblokStory } from '@storyblok/react/rsc'
 import { Metadata } from "next"
 
 import NotFound from "../not-found"
 import Home from "../homepage"
+import { getStoryblokApi } from '@/lib/storyblok-resources'
 
 interface Stories {
   stories: any[]
@@ -44,32 +45,35 @@ export async function generateStaticParams(){
   return resources.map(resource => ({slug: resource.full_slug.split['/']}))
 }
 
-async function fetchData(slug: string) {
-  try {
-    const version = process.env.NEXT_PUBLIC_SB_VERSION === 'published' ? 'published' : 'draft'
-    const res = await fetch(`https://api.storyblok.com/v2/cdn/stories/${slug}?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${version}`)
-    const data = await res.json()
-    return data
-  } catch (err) {
-    console.log(err)
-    return {}
-  }
+async function fetchData(slug: string): Promise<ISbStory> {
+  const version = process.env.NEXT_PUBLIC_SB_VERSION === 'published' ? 'published' : 'draft'
+  // const res = await fetch(`https://api.storyblok.com/v2/cdn/stories/${slug}?token=${process.env.NEXT_PUBLIC_STORYBLOK_READ_API_KEY2}&version=${version}`)
+  // const data = await res.json()
+  const sbParams: ISbStoriesParams = {version}
+  const storyblokApi: StoryblokClient = getStoryblokApi()
+  return storyblokApi.get(`cdn/stories/${slug}`, sbParams, {cache: 'no-store'})
 }
 
 export default async function SBPage({params}: {params: {slug: string}}) {
   const slug = params.slug && Array.isArray(params.slug) ? params.slug.join("/") : params.slug;
-  const data = await fetchData(slug)
-  if (!data.story) {
+  try {
+    const {data}: ISbStory = await fetchData(slug)
+    if (data.story.content.component === 'homepage') {
+      return <Home/>
+    }
+  
+    return (
+      <div>
+        <StoryblokStory story={data.story} />
+      </div>
+    );
+  } catch (err) {
+    console.log(err)
     return <NotFound/>
   }
-  if (data.story.content.component === 'homepage') {
-    return <Home/>
-  }
-
-  return (
-    <div>
-      <StoryblokStory story={data.story} />
-    </div>
-  );
+  // if (!data.story) {
+  //   return <NotFound/>
+  // }
+  
 
 }
